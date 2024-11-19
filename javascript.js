@@ -36,6 +36,13 @@ function removeDuplicateValues(array) {
   return newArray;
 }
 
+function sortNumericArray(array) {
+  array.sort(function (a, b) {
+    return a - b;
+  });
+  return array;
+}
+
 let testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 
-console.log(removeDuplicateValues(testArray));
+console.log(sortNumericArray(removeDuplicateValues(testArray)));
