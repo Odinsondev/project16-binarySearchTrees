@@ -180,8 +180,8 @@ function tree(array) {
         //Link currentNode(deleted).left to replacementNode
         replacementNode.left = this.currentNode.left;
 
-        //FIX THIS AFTER FIXING THE ISSUE
         //Rebuild parentNode's right subtree
+
         //Find the last node of the replacementNode's right subtree
         let replacementNodeRightSubtreeEnd = null;
         if (replacementNode.right !== null) {
@@ -192,12 +192,6 @@ function tree(array) {
               replacementNodeRightSubtreeEnd.right;
           }
         }
-
-        console.log(replacementNodeRightSubtreeEnd);
-        console.log(replacementNode);
-        replacementNode.right = null;
-        console.log(replacementNode);
-        console.log(replacementNode.left);
 
         //Section between currentNode(deleted).right and replacementNode
         let midSection = null;
@@ -222,18 +216,45 @@ function tree(array) {
         }
 
         //Remove links to replacementNode from currentNode(deleted).right.left
-        this.currentNode.right.left = null;
+        //If statement stops removing .left from replacementNode itself
+        if (replacementNode !== this.currentNode.right) {
+          this.currentNode.right.left = null;
+        }
 
         //Links replacementNode right subtree last node to midSection last node to
         //deletedNode.right
-        if (midSection === null) {
-          //ISSUE IS HERE
-          if (replacementNodeRightSubtreeEnd.right !== this.currentNode.right) {
-            replacementNodeRightSubtreeEnd.right = this.currentNode.right;
+        if (
+          //If replacementNode is the only node in deletedNode's right subtree
+          replacementNode === this.currentNode.right &&
+          this.currentNode.right.right === null
+        ) {
+          //midsection here is always null
+          console.log('option1');
+          replacementNode.right = null;
+        } else if (
+          //If replacementNode is not the only node in deletedNode's right subtree
+          replacementNode !== this.currentNode.right ||
+          this.currentNode.right.right !== null
+        ) {
+          if (midSection === null) {
+            if (replacementNodeRightSubtreeEnd === null) {
+              console.log('option2');
+              replacementNode.right = this.currentNode.right;
+            } else if (replacementNodeRightSubtreeEnd !== null) {
+              console.log('option3');
+              replacementNodeRightSubtreeEnd.right = this.currentNode.right;
+            }
+          } else if (midSection !== null) {
+            if (replacementNodeRightSubtreeEnd === null) {
+              console.log('option4');
+              replacementNode.right = midSection;
+              midSectionRightEnd.right = this.currentNode.right;
+            } else if (replacementNodeRightSubtreeEnd !== null) {
+              console.log('option5');
+              replacementNodeRightSubtreeEnd.right = midSection;
+              midSectionRightEnd.right = this.currentNode.right;
+            }
           }
-        } else {
-          replacementNodeRightSubtreeEnd.right = midSection;
-          midSectionRightEnd.right = this.currentNode.right;
         }
 
         //reset currentNode and parentNode
@@ -241,6 +262,101 @@ function tree(array) {
         this.parentNode = this.root;
       }
     }
+  };
+
+  //Returns the node with the given value
+  balancedBST.find = function (value) {
+    //If value is smaller than the current node
+    if (value < this.currentNode.data) {
+      //If left subtree exists
+      if (this.currentNode.left !== null) {
+        this.currentNode = this.currentNode.left;
+
+        balancedBST.find(value);
+
+        //If left subtree does not exist - console.log an error
+      } else if (this.currentNode.left === null) {
+        console.log('Value is not present in the tree');
+      }
+
+      //If value is larger than the current node
+    } else if (value > this.currentNode.data) {
+      //If right subtree exists
+      if (this.currentNode.right !== null) {
+        this.currentNode = this.currentNode.right;
+
+        balancedBST.find(value);
+
+        //If right subtree does not exist - console.log an error
+      } else if (this.currentNode.right === null) {
+        console.log('Value is not present in the tree');
+      }
+
+      //If value is same as current node
+    } else {
+      console.log(this.currentNode);
+      return this.currentNode;
+    }
+  };
+
+  balancedBST.levelOrderIterative = function (callbackFunction) {
+    if (callbackFunction === undefined) {
+      console.log('Callback function necessary');
+      return;
+    }
+
+    if (balancedBST.root === null) {
+      return;
+    }
+
+    const queueArray = [];
+    queueArray.push(balancedBST.root);
+
+    while (queueArray.length > 0) {
+      let currentNode = queueArray[0];
+      callbackFunction(currentNode);
+      if (currentNode.left !== null) {
+        queueArray.push(currentNode.left);
+      }
+      if (currentNode.right !== null) {
+        queueArray.push(currentNode.right);
+      }
+      queueArray.shift();
+    }
+  };
+
+  balancedBST.levelOrderRecursive = function (callbackFunction) {
+    if (callbackFunction === undefined) {
+      console.log('Callback function necessary');
+      return;
+    }
+
+    if (balancedBST.root === null) {
+      return;
+    }
+
+    const queueArray = [];
+    queueArray.push(balancedBST.root);
+
+    function recursion() {
+      if (queueArray.length === 0) {
+        return;
+      }
+      let currentNode = queueArray[0];
+
+      callbackFunction(currentNode);
+
+      if (currentNode.left !== null) {
+        queueArray.push(currentNode.left);
+      }
+      if (currentNode.right !== null) {
+        queueArray.push(currentNode.right);
+      }
+      queueArray.shift();
+
+      recursion();
+    }
+    recursion();
   };
 
   return balancedBST;
@@ -295,7 +411,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 
 console.log(prettyPrint(testTree.root));
 
-testTree.insert(100);
+/* testTree.insert(100);
 testTree.insert(75);
 testTree.insert(3.3);
 testTree.insert(85);
@@ -307,10 +423,21 @@ testTree.insert(1000);
 testTree.insert(999);
 testTree.insert(1050);
 testTree.insert(7000);
-testTree.insert(6999);
+testTree.insert(6500);
 testTree.insert(7500);
-testTree.insert(999.5);
-console.log(prettyPrint(testTree.root));
+testTree.insert(7460);
+testTree.insert(7400);
+console.log(prettyPrint(testTree.root)); */
 
-testTree.delete(1000);
-console.log(prettyPrint(testTree.root));
+/* testTree.delete(7000);
+console.log(prettyPrint(testTree.root)); */
+
+/* testTree.find(7500); */
+
+function callbackFunction(node) {
+  console.log(node);
+}
+console.log('Iterative');
+testTree.levelOrderIterative(callbackFunction);
+console.log('Recursive');
+testTree.levelOrderRecursive(callbackFunction);
