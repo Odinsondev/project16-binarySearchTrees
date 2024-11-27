@@ -41,7 +41,7 @@ function tree(array) {
   //Can only use the function after it has been defined
   balancedBST.root = balancedBST.buildTree();
 
-  //Used in the insert, delete methods
+  //Used in the insert, delete, find methods
   balancedBST.currentNode = balancedBST.root;
   //Used in the delete method
   balancedBST.parentNode = balancedBST.root;
@@ -265,6 +265,7 @@ function tree(array) {
   };
 
   //Returns the node with the given value
+  //Does not return the node for some reason - undefined
   balancedBST.find = function (value) {
     //If value is smaller than the current node
     if (value < this.currentNode.data) {
@@ -295,16 +296,40 @@ function tree(array) {
       //If value is same as current node
     } else {
       console.log(this.currentNode);
-      return this.currentNode;
+      let result = this.currentNode;
+      //this should return the NODE - FIX IT !!! it doesn't return anything
+      console.log('here');
+      let f = 2;
+      return f;
     }
+    this.currentNode = this.root;
+
+    return 'hha'; //this does return, is it because its not a nested function
+    //THAT's IT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   };
 
+  //TEST
+  //
+  //
+  // here return works
+  balancedBST.test = function () {
+    let test = this.currentNode;
+    console.log(test);
+    return test;
+  };
+  //
+  //
+  //
+
+  //Traverses the tree in preorder order and passes each node to the provided callback
+  //Iterative approach
   balancedBST.levelOrderIterative = function (callbackFunction) {
     if (callbackFunction === undefined) {
       console.log('Callback function necessary');
       return;
     }
 
+    //If tree has no nodes
     if (balancedBST.root === null) {
       return;
     }
@@ -325,12 +350,14 @@ function tree(array) {
     }
   };
 
+  //Traverses the tree in levelorder order and passes each node to the provided callback
   balancedBST.levelOrderRecursive = function (callbackFunction) {
     if (callbackFunction === undefined) {
       console.log('Callback function necessary');
       return;
     }
 
+    //If tree has no nodes
     if (balancedBST.root === null) {
       return;
     }
@@ -358,6 +385,108 @@ function tree(array) {
     }
     recursion();
   };
+
+  //Traverses the tree in preorder order and passes each node to the provided callback
+  balancedBST.preOrder = function (callbackFunction) {
+    if (callbackFunction === undefined) {
+      console.log('Callback function necessary');
+      return;
+    }
+
+    //If tree has no nodes
+    if (balancedBST.root === null) {
+      return;
+    }
+
+    let currentNode = balancedBST.root;
+
+    function preOrederTraverse(node) {
+      if (node === null) {
+        return;
+      }
+      callbackFunction(node);
+      preOrederTraverse(node.left);
+      preOrederTraverse(node.right);
+    }
+    preOrederTraverse(currentNode);
+  };
+
+  //Traverses the tree in inorder order and passes each node to the provided callback
+  //Note: traverses in correct numeric order
+  balancedBST.inOrder = function (callbackFunction) {
+    if (callbackFunction === undefined) {
+      console.log('Callback function necessary');
+      return;
+    }
+
+    //If tree has no nodes
+    if (balancedBST.root === null) {
+      return;
+    }
+
+    let currentNode = balancedBST.root;
+
+    function inOrederTraverse(node) {
+      if (node === null) {
+        return;
+      }
+      inOrederTraverse(node.left);
+      callbackFunction(node);
+      inOrederTraverse(node.right);
+    }
+    inOrederTraverse(currentNode);
+  };
+
+  //Traverses the tree in postorder order and passes each node to the provided callback
+  balancedBST.postOrder = function (callbackFunction) {
+    if (callbackFunction === undefined) {
+      console.log('Callback function necessary');
+      return;
+    }
+
+    //If tree has no nodes
+    if (balancedBST.root === null) {
+      return;
+    }
+
+    let currentNode = balancedBST.root;
+
+    function postOrederTraverse(node) {
+      if (node === null) {
+        return;
+      }
+      postOrederTraverse(node.left);
+      postOrederTraverse(node.right);
+      callbackFunction(node);
+    }
+    postOrederTraverse(currentNode);
+  };
+
+  //Write a height(node) function that returns the given node’s height.
+  //Height is defined as the number of edges in the longest path from a given node
+  //to a leaf node.
+  balancedBST.height = function (node) {
+    if (node === null) {
+      return -1;
+    }
+
+    let leftHeight = balancedBST.height(node.left);
+    let rightHeight = balancedBST.height(node.right);
+
+    return Math.max(leftHeight, rightHeight) + 1;
+  };
+
+  //Write a depth(node) function that returns the given node’s depth.
+  //Depth is defined as the number of edges in the path from a given node
+  //to the tree’s root node.
+
+  //Write an isBalanced function that checks if the tree is balanced.
+  //A balanced tree is one where the difference between heights of the left subtree
+  //and the right subtree of every node is not more than 1.
+
+  //Write a rebalance function that rebalances an unbalanced tree.
+  //Tip: You’ll want to use a traversal method to provide a new array
+  //to the buildTree function.
 
   return balancedBST;
 }
@@ -434,10 +563,25 @@ console.log(prettyPrint(testTree.root)); */
 
 /* testTree.find(7500); */
 
-function callbackFunction(node) {
+/* function callbackFunction(node) {
   console.log(node);
-}
-console.log('Iterative');
+} */
+/* console.log('levelOrder - Iterative');
 testTree.levelOrderIterative(callbackFunction);
-console.log('Recursive');
-testTree.levelOrderRecursive(callbackFunction);
+console.log('levelOrder - Recursive');
+testTree.levelOrderRecursive(callbackFunction); */
+
+/* console.log('preOrder');
+testTree.preOrder(callbackFunction); */
+
+/* console.log('inOrder');
+testTree.inOrder(callbackFunction); */
+
+/* console.log('postOrder');
+testTree.postOrder(callbackFunction); */
+
+console.log(testTree.height(testTree.root.right));
+
+console.log(testTree.find(4));
+
+console.log(testTree.test());
