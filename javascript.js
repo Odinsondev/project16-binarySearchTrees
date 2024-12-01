@@ -45,6 +45,9 @@ function tree(array) {
   balancedBST.currentNode = balancedBST.root;
   //Used in the delete method
   balancedBST.parentNode = balancedBST.root;
+  //Used in the find method
+  //not using value null as null is part of the height function
+  balancedBST.result = '';
 
   //Inserts the given value
   balancedBST.insert = function (value) {
@@ -267,6 +270,7 @@ function tree(array) {
   //Returns the node with the given value
   //Does not return the node for some reason - undefined
   balancedBST.find = function (value) {
+    this.result = '';
     //If value is smaller than the current node
     if (value < this.currentNode.data) {
       //If left subtree exists
@@ -295,31 +299,12 @@ function tree(array) {
 
       //If value is same as current node
     } else {
-      console.log(this.currentNode);
-      let result = this.currentNode;
-      //this should return the NODE - FIX IT !!! it doesn't return anything
-      console.log('here');
-      let f = 2;
-      return f;
+      this.result = this.currentNode;
     }
     this.currentNode = this.root;
 
-    return 'hha'; //this does return, is it because its not a nested function
-    //THAT's IT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    return this.result;
   };
-
-  //TEST
-  //
-  //
-  // here return works
-  balancedBST.test = function () {
-    let test = this.currentNode;
-    console.log(test);
-    return test;
-  };
-  //
-  //
-  //
 
   //Traverses the tree in preorder order and passes each node to the provided callback
   //Iterative approach
@@ -462,10 +447,17 @@ function tree(array) {
     postOrederTraverse(currentNode);
   };
 
-  //Write a height(node) function that returns the given node’s height.
+  //Returns the given node’s height.
   //Height is defined as the number of edges in the longest path from a given node
   //to a leaf node.
   balancedBST.height = function (node) {
+    //if using the find method to pass a node that does not exist
+    if (node === '') {
+      console.error('Node does not exist');
+      return;
+    }
+
+    //Googled this function.
     if (node === null) {
       return -1;
     }
@@ -476,17 +468,109 @@ function tree(array) {
     return Math.max(leftHeight, rightHeight) + 1;
   };
 
-  //Write a depth(node) function that returns the given node’s depth.
+  //Returns the given node’s depth.
   //Depth is defined as the number of edges in the path from a given node
   //to the tree’s root node.
+  balancedBST.depth = function (node) {
+    //if using the find method to pass a node that does not exist
+    if (node === '') {
+      console.error('Node does not exist');
+      return;
+    }
 
-  //Write an isBalanced function that checks if the tree is balanced.
-  //A balanced tree is one where the difference between heights of the left subtree
-  //and the right subtree of every node is not more than 1.
+    let value = node.data;
+    let depth = 0;
 
-  //Write a rebalance function that rebalances an unbalanced tree.
-  //Tip: You’ll want to use a traversal method to provide a new array
-  //to the buildTree function.
+    function search(value) {
+      //If value is smaller than the current node
+      if (value < balancedBST.currentNode.data) {
+        //If left subtree exists
+        if (balancedBST.currentNode.left !== null) {
+          balancedBST.currentNode = balancedBST.currentNode.left;
+          depth++;
+
+          search(value);
+
+          //If left subtree does not exist - console.log an error
+        } else if (balancedBST.currentNode.left === null) {
+          console.log('Value is not present in the tree');
+        }
+
+        //If value is larger than the current node
+      } else if (value > balancedBST.currentNode.data) {
+        //If right subtree exists
+        if (balancedBST.currentNode.right !== null) {
+          balancedBST.currentNode = balancedBST.currentNode.right;
+          depth++;
+
+          search(value);
+
+          //If right subtree does not exist - console.log an error
+        } else if (balancedBST.currentNode.right === null) {
+          console.log('Value is not present in the tree');
+        }
+
+        //If value is same as current node
+      } else {
+        return;
+      }
+    }
+    search(value);
+
+    this.currentNode = this.root;
+
+    return depth;
+  };
+
+  //Checks if the tree is balanced
+  balancedBST.isBalanced = function () {
+    let currentNode = balancedBST.root;
+    let balanced = true;
+
+    function checkIfBalanced(node) {
+      //Stops the function once unbalanced is confirmed
+      if (balanced === false) {
+        return;
+      }
+
+      //Recursive function terminating statement
+      if (node === null) {
+        console.log('end');
+        return;
+      }
+
+      if (
+        balancedBST.height(node.left) - balancedBST.height(node.right) > 1 ||
+        balancedBST.height(node.right) - balancedBST.height(node.left) > 1
+      ) {
+        balanced = false;
+      } else {
+        console.log('balanced');
+      }
+
+      checkIfBalanced(node.left);
+      checkIfBalanced(node.right);
+    }
+    checkIfBalanced(currentNode);
+    return balanced;
+  };
+
+  //Rebalances an unbalanced tree.
+  balancedBST.rebalance = function () {
+    let array = [];
+
+    function addToArray(node) {
+      array.push(node.data);
+    }
+
+    balancedBST.inOrder(addToArray);
+    console.log(array);
+
+    const newTree = tree(array);
+    console.log(prettyPrint(newTree.root));
+
+    //currently this is a new tree - need to replace old one
+  };
 
   return balancedBST;
 }
@@ -565,23 +649,45 @@ console.log(prettyPrint(testTree.root)); */
 
 /* function callbackFunction(node) {
   console.log(node);
-} */
-/* console.log('levelOrder - Iterative');
+}
+console.log('levelOrder - Iterative');
 testTree.levelOrderIterative(callbackFunction);
 console.log('levelOrder - Recursive');
 testTree.levelOrderRecursive(callbackFunction); */
 
-/* console.log('preOrder');
+/* function callbackFunction(node) {
+  console.log(node);
+}
+console.log('preOrder');
 testTree.preOrder(callbackFunction); */
 
 /* console.log('inOrder');
+function callbackFunction(node) {
+  console.log(node);
+}
 testTree.inOrder(callbackFunction); */
 
-/* console.log('postOrder');
+/* function callbackFunction(node) {
+  console.log(node);
+}
+console.log('postOrder');
 testTree.postOrder(callbackFunction); */
 
-console.log(testTree.height(testTree.root.right));
+/* console.log('height');
+console.log(testTree.height(testTree.find(4))); */
 
-console.log(testTree.find(4));
+/* console.log('depth');
+console.log(testTree.depth(testTree.find(4))); */
 
-console.log(testTree.test());
+/* console.log('isBalanced');
+testTree.insert(2);
+console.log(prettyPrint(testTree.root));
+console.log(testTree.isBalanced()); */
+
+console.log('rebalance');
+testTree.insert(2.1);
+testTree.insert(2.2);
+testTree.insert(2);
+testTree.insert(1.5);
+console.log(prettyPrint(testTree.root));
+console.log(testTree.rebalance());
