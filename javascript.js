@@ -15,7 +15,6 @@ function tree(array) {
   balancedBST.sortedArray = sortNumericArray(removeDuplicateValues(array));
 
   balancedBST.buildTree = function () {
-    console.log('runnig');
     return sortedArrayToBSTRecur(this.sortedArray, 0, array.length - 1);
 
     function sortedArrayToBSTRecur(array, start, end) {
@@ -535,7 +534,6 @@ function tree(array) {
 
       //Recursive function terminating statement
       if (node === null) {
-        console.log('end');
         return;
       }
 
@@ -545,7 +543,7 @@ function tree(array) {
       ) {
         balanced = false;
       } else {
-        console.log('balanced');
+        //is balanced
       }
 
       checkIfBalanced(node.left);
@@ -557,19 +555,25 @@ function tree(array) {
 
   //Rebalances an unbalanced tree.
   balancedBST.rebalance = function () {
-    let array = [];
+    let newArray = [];
 
+    //callback function for inOrder
     function addToArray(node) {
-      array.push(node.data);
+      newArray.push(node.data);
     }
 
+    //runs inOrder to create new array
     balancedBST.inOrder(addToArray);
-    console.log(array);
 
-    const newTree = tree(array);
-    console.log(prettyPrint(newTree.root));
+    //creates new tree
+    const newTree = tree(newArray);
 
-    //currently this is a new tree - need to replace old one
+    //replaces old unbalaced tree with new balanced tree
+    balancedBST.root = newTree.root;
+
+    this.currentNode = this.root;
+    this.parentNode = this.root;
+    this.result = '';
   };
 
   return balancedBST;
@@ -624,70 +628,63 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 
 console.log(prettyPrint(testTree.root));
 
-/* testTree.insert(100);
-testTree.insert(75);
-testTree.insert(3.3);
-testTree.insert(85);
-testTree.insert(70);
-testTree.insert(200);
-testTree.insert(150);
-testTree.insert(250);
-testTree.insert(1000);
-testTree.insert(999);
-testTree.insert(1050);
-testTree.insert(7000);
-testTree.insert(6500);
-testTree.insert(7500);
-testTree.insert(7460);
-testTree.insert(7400);
-console.log(prettyPrint(testTree.root)); */
+//Driver script to test the balanced binary search tree and its methods
+function testBST() {
+  console.log('Driver script test');
 
-/* testTree.delete(7000);
-console.log(prettyPrint(testTree.root)); */
+  //Create a binary search tree from an array of random numbers < 100
+  function createRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
 
-/* testTree.find(7500); */
+  function createRandomArray(length) {
+    let array = [];
 
-/* function callbackFunction(node) {
-  console.log(node);
+    for (let i = 0; i < length; i++) {
+      array.push(createRandomNumber(0, 100));
+    }
+
+    return array;
+  }
+
+  const testTree2 = tree(createRandomArray(10));
+
+  console.log(prettyPrint(testTree2.root));
+
+  //Confirm that the tree is balanced by calling isBalanced
+  console.log(testTree2.isBalanced());
+
+  //Print out all elements in level, pre, post, and in order
+  let arrayOfTreeElements = [];
+
+  function printNodes(node) {
+    arrayOfTreeElements.push(node.data);
+  }
+
+  testTree2.levelOrderIterative(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  testTree2.preOrder(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  testTree2.postOrder(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  testTree2.inOrder(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  //Unbalance the tree by adding several numbers > 100
+
+  //Confirm that the tree is unbalanced by calling isBalanced
+
+  //Balance the tree by calling rebalance
+
+  //Confirm that the tree is balanced by calling isBalanced
+
+  //Print out all elements in level, pre, post, and in order
 }
-console.log('levelOrder - Iterative');
-testTree.levelOrderIterative(callbackFunction);
-console.log('levelOrder - Recursive');
-testTree.levelOrderRecursive(callbackFunction); */
-
-/* function callbackFunction(node) {
-  console.log(node);
-}
-console.log('preOrder');
-testTree.preOrder(callbackFunction); */
-
-/* console.log('inOrder');
-function callbackFunction(node) {
-  console.log(node);
-}
-testTree.inOrder(callbackFunction); */
-
-/* function callbackFunction(node) {
-  console.log(node);
-}
-console.log('postOrder');
-testTree.postOrder(callbackFunction); */
-
-/* console.log('height');
-console.log(testTree.height(testTree.find(4))); */
-
-/* console.log('depth');
-console.log(testTree.depth(testTree.find(4))); */
-
-/* console.log('isBalanced');
-testTree.insert(2);
-console.log(prettyPrint(testTree.root));
-console.log(testTree.isBalanced()); */
-
-console.log('rebalance');
-testTree.insert(2.1);
-testTree.insert(2.2);
-testTree.insert(2);
-testTree.insert(1.5);
-console.log(prettyPrint(testTree.root));
-console.log(testTree.rebalance());
+testBST();
