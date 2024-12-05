@@ -648,6 +648,7 @@ function testBST() {
   }
 
   const testTree2 = tree(createRandomArray(10));
+  //Note: tree will have less nodes if duplicate numbers produced
 
   console.log(prettyPrint(testTree2.root));
 
@@ -678,13 +679,41 @@ function testBST() {
   arrayOfTreeElements = [];
 
   //Unbalance the tree by adding several numbers > 100
+  function addNumbersToTree(numberAmount) {
+    for (let i = 0; i < numberAmount; i++) {
+      testTree2.insert(createRandomNumber(100, 200));
+    }
+  }
+  addNumbersToTree(5);
+
+  console.log(prettyPrint(testTree2.root));
 
   //Confirm that the tree is unbalanced by calling isBalanced
+  console.log(testTree2.isBalanced());
 
   //Balance the tree by calling rebalance
+  testTree2.rebalance();
+
+  console.log(prettyPrint(testTree2.root));
 
   //Confirm that the tree is balanced by calling isBalanced
+  console.log(testTree2.isBalanced());
 
   //Print out all elements in level, pre, post, and in order
+  testTree2.levelOrderIterative(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  testTree2.preOrder(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  testTree2.postOrder(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
+
+  testTree2.inOrder(printNodes);
+  console.log(arrayOfTreeElements);
+  arrayOfTreeElements = [];
 }
 testBST();
