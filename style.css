@@ -30,6 +30,29 @@ body {
   grid-template: 1fr 4fr 40px/ 1fr;
 }
 
+header {
+  grid-row: 1 / 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--text-footer);
+}
+
+#container {
+  text-align: center;
+}
+
+#title {
+  font-size: 3rem;
+  margin: 0 0 0.5rem 0;
+}
+
+#instructions {
+  font-size: 1rem;
+  margin: 0;
+}
+
 footer {
   grid-row: 3 / 4;
 

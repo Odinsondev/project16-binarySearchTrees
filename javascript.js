@@ -609,8 +609,10 @@ function sortNumericArray(array) {
 }
 
 //TestArray and testTree
-let testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const testTree = tree(testArray);
+
+console.log('Test Tree:');
 
 //Function provided by The Odin Project to console.log the tree
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -630,7 +632,7 @@ console.log(prettyPrint(testTree.root));
 
 //Driver script to test the balanced binary search tree and its methods
 function testBST() {
-  console.log('Driver script test');
+  console.log('Driver script test:');
 
   //Create a binary search tree from an array of random numbers < 100
   function createRandomNumber(min, max) {
@@ -638,7 +640,7 @@ function testBST() {
   }
 
   function createRandomArray(length) {
-    let array = [];
+    const array = [];
 
     for (let i = 0; i < length; i++) {
       array.push(createRandomNumber(0, 100));
@@ -717,3 +719,11 @@ function testBST() {
   arrayOfTreeElements = [];
 }
 testBST();
+
+console.log('Driver script test complete');
+
+console.log(' ');
+console.log('syntax:');
+console.log('const arrayName = [1, 2, ...];');
+console.log('const treeName = tree(arrayName);');
+console.log('console.log(prettyPrint(treeName.root));');
